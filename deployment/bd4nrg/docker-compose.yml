@@ -1,0 +1,25 @@
+version: "3.5"
+services:
+  bd4nrg-backend:
+    build:
+      context: bd4nrg-backend
+      args:
+        DB_IP: bd4nrgdb
+        DB_PORT: 3306
+        DB_NAME: bd4nrg
+        DB_USERNAME: root
+        DB_PASSWORD: root
+        SOFIA_URI: http://sofia-backend:15502/api
+      dockerfile: Dockerfile
+    image: bd4nrg-backend
+    container_name: bd4nrg-backend
+    ports:
+      - "15504:15504"
+    restart: unless-stopped
+    networks:
+      - bd4nrg
+networks:
+  bd4nrg:
+    external: true
+    name: bd4nrg
+    driver: bridge

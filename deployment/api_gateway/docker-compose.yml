@@ -1,0 +1,21 @@
+version: "3.5"
+services:
+  api-gateway:
+    build:
+      context: api-gateway
+      args:
+        BD4NRG_IP: http://bd4nrg-backend:15504/api
+        SOFIA_IP: http://sofia-backend:15502/api
+      dockerfile: Dockerfile
+    image: api-gateway
+    container_name: api-gateway
+    ports:
+      - "15502:15502"
+    restart: unless-stopped
+    networks:
+      - bd4nrg
+networks:
+  bd4nrg:
+    external: true
+    name: bd4nrg
+    driver: bridge
