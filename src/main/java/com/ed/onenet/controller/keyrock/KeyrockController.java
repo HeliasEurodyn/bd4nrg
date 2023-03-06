@@ -23,6 +23,11 @@ public class KeyrockController {
     @PostMapping(value = "/sync")
     public Map<String, String> sync() {
         userService.refreshKeyrockUsers();
+        return Collections.singletonMap("status","ok");
+    }
+
+    @PostMapping(value = "/sync/org")
+    public Map<String, String> syncOrg() {
         userService.refreshKeyrockOrganizations();
         return Collections.singletonMap("status","ok");
     }
