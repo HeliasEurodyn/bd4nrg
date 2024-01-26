@@ -33,7 +33,7 @@ public class KeyrockRestTemplate {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            httpHeaders.add("Authorization", "Basic YjEwYjBmMGYtNjBhYi00MTJjLWI4NjktZWE1YzBhYTE5NGI2OjZiYTA4NDYxLTcwZjMtNDI0OS05MTdhLTFmZTg3MmU1ZTRjMA==");
+            httpHeaders.add("Authorization", "Basic ZTA0ZTA1MWQtMDAxZC00NzhlLWJlNGEtNjk2NjlhZjFjMzRkOjg4ZjcwYmEwLWRjMTAtNGE2Mi1hODZiLTYyODkyY2VjNmY4Mg==");
 
             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
             map.add("username", loginDTO.getUsername());
@@ -54,14 +54,7 @@ public class KeyrockRestTemplate {
             return response.getBody();
 
         } catch (HttpStatusCodeException ex) {
-
             return null;
-          //  LoginErrorException loginErrorException = new LoginErrorException("User Credentials Are Invalid");
-         //   loginErrorException.setCode("001-2");
-         //   loginErrorException.setVisible(true);
-         //   loginErrorException.setCategory("LOGIN");
-
-        //    throw loginErrorException;
         }
     }
 
@@ -183,6 +176,37 @@ public class KeyrockRestTemplate {
                     );
 
             return (List<LinkedHashMap>) response.getBody().get("organizations");
+
+        } catch (HttpStatusCodeException ex) {
+
+            LoginErrorException loginErrorException = new LoginErrorException("Error");
+            loginErrorException.setCode("001-2");
+            loginErrorException.setVisible(true);
+            loginErrorException.setCategory("LOGIN");
+
+            throw loginErrorException;
+        }
+    }
+
+    public List<LinkedHashMap> getApplications(String token) {
+
+        try {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.add("X-Auth-Token", token);
+
+            HttpEntity httpEntity = new HttpEntity(httpHeaders);
+
+            ResponseEntity<LinkedHashMap> response =
+                    restTemplate.exchange(
+                            URI.create(keyrockUri + "/v1/applications"),
+                            HttpMethod.GET,
+                            httpEntity,
+                            new ParameterizedTypeReference<LinkedHashMap>() {
+                            }
+                    );
+
+            return (List<LinkedHashMap>) response.getBody().get("applications");
 
         } catch (HttpStatusCodeException ex) {
 

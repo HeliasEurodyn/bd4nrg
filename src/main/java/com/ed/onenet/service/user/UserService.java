@@ -52,12 +52,17 @@ public class UserService {
 
     public void refreshKeyrockUsers() {
 
-        String adminToken = keyrockRestTemplate.getAuthAdminToken("admin@test.com", "1234");
+        String adminToken = keyrockRestTemplate.getAuthAdminToken("admin@test.com", "a12345678!");
         List<LinkedHashMap> keyrockUserResponseMaps = keyrockRestTemplate.getUsers(adminToken);
 
         keyrockUserResponseMaps.forEach(keyrockUserResponseMap -> {
 
-            KeyrockUserResponse keyrockUserResponse = new KeyrockUserResponse().setId((String) keyrockUserResponseMap.get("id")).setUsername((String) keyrockUserResponseMap.get("username")).setEmail((String) keyrockUserResponseMap.get("email")).setDisplayName((String) keyrockUserResponseMap.get("description")).setPassword(UUID.randomUUID().toString());
+            KeyrockUserResponse keyrockUserResponse = new KeyrockUserResponse()
+                    .setId((String) keyrockUserResponseMap.get("id"))
+                    .setUsername((String) keyrockUserResponseMap.get("username"))
+                    .setEmail((String) keyrockUserResponseMap.get("email"))
+                    .setDisplayName((String) keyrockUserResponseMap.get("description"))
+                    .setPassword(UUID.randomUUID().toString());
 
             this.userRepository.registerNewUser(keyrockUserResponse);
         });
@@ -67,7 +72,7 @@ public class UserService {
     @Transactional
     public void refreshKeyrockOrganizations() {
 
-        String adminToken = keyrockRestTemplate.getAuthAdminToken("admin@test.com", "1234");
+        String adminToken = keyrockRestTemplate.getAuthAdminToken("admin@test.com", "a12345678!");
         List<LinkedHashMap> keyrockOrgResponseMaps = keyrockRestTemplate.getOrganizations(adminToken);
 
         keyrockOrgResponseMaps.forEach(keyrockOrgResponseMap -> {
@@ -88,5 +93,36 @@ public class UserService {
             this.userRepository.registerOrganizationUserJoin((String) map.get("user_id"), (String) map.get("organization_id"));
         });
     }
+
+
+    @Transactional
+    public void refreshKeyrockApplications() {
+
+        String adminToken = keyrockRestTemplate.getAuthAdminToken("admin@test.com", "a12345678!");
+        List<LinkedHashMap> keyrockOrgResponseMaps = keyrockRestTemplate.getApplications(adminToken);
+
+        keyrockOrgResponseMaps.forEach(application -> {
+
+            this.userRepository.registerApplication(application.get("id").toString(),
+                    application.get("name").toString(),
+                    application.get("description").toString(),
+                    application.get("image").toString(),
+                    application.get("url").toString(),
+
+                    application.get("redirect_uri").toString(),
+                    application.get("redirect_sign_out_uri").toString(),
+                    application.get("grant_type").toString(),
+                    application.get("response_type").toString(),
+                    application.get("token_types").toString(),
+                    application.get("jwt_secret").toString(),
+                    application.get("client_type").toString()
+            );
+
+            String applicationId = application.get("id").toString();
+        //    this.refreshKeyrockApplicationUsers(applicationId, adminToken);
+        });
+
+    }
+
 
 }

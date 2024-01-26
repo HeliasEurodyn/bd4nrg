@@ -51,6 +51,14 @@ public class UserRepository {
         return results.size() > 0;
     }
 
+    public Boolean checkApplicationExistance(String id) {
+        Query query = this.entityManager.createNativeQuery("SELECT * FROM application WHERE app_id = :id ");
+        query.setParameter("id", id);
+        List<Object[]> results = query.getResultList();
+
+        return results.size() > 0;
+    }
+
     public void saveUser(List<Object[]> fields, String oauth2UserId, KeyrockUserResponse keyrockUserResponse) {
 
         List<String> queryFields = fields.stream().filter(field -> !field[0].toString().equals("id"))
@@ -145,5 +153,101 @@ public class UserRepository {
         query.executeUpdate();
     }
 
+    public void registerApplication(String id,
+                                    String name,
+                                    String description,
+                                    String image,
+                                    String url,
+                                    String redirectUri,
+                                    String redirectSignOutUri,
+                                    String grantType,
+                                    String responseType,
+                                    String tokenTypes,
+                                    String jwtSecret,
+                                    String clientType) {
+
+        Boolean exists = this.checkApplicationExistance(id);
+        if (exists) {
+            return;
+        }
+
+        this.saveApplication(id,
+                name,
+                description,
+                image,
+                url,
+                redirectUri,
+                redirectSignOutUri,
+                grantType,
+                responseType,
+                tokenTypes,
+                jwtSecret,
+                clientType);
+    }
+
+
+    public void saveApplication(String id,
+                                    String name,
+                                    String description,
+                                    String image,
+                                    String url,
+                                    String redirectUri,
+                                    String redirectSignOutUri,
+                                    String grantType,
+                                    String responseType,
+                                    String tokenTypes,
+                                    String jwtSecret,
+                                    String clientType) {
+
+       String queryStr = "INSERT INTO `application`(" +
+                "`app_id`, " +
+                "`name`, " +
+                "`description`, " +
+                "`image`, " +
+                "`url`, " +
+                "`redirect_uri`, " +
+                "`redirect_sign_out_uri`, " +
+                "`grant_type`, " +
+                "`response_type`, " +
+                "`token_types`, " +
+                "`jwt_secret`, " +
+                "`client_type` " +
+               ") " +
+               "VALUES " +
+               "( " +
+                ":app_id, " +
+                ":name, " +
+                ":description, " +
+                ":image, " +
+                ":url, " +
+                ":redirect_uri, " +
+                ":redirect_sign_out_uri, " +
+                ":grant_type, " +
+                ":response_type, " +
+                ":token_types, " +
+                ":jwt_secret, " +
+                ":client_type" +
+                ")";
+
+        Query query = entityManager.createNativeQuery(queryStr);
+
+
+        query.setParameter("app_id" , id);
+        query.setParameter("name " ,  name);
+        query.setParameter("description" , description);
+        query.setParameter("image" , image);
+        query.setParameter("url" , url);
+        query.setParameter("redirect_uri" , redirectUri);
+        query.setParameter("redirect_sign_out_uri" , redirectSignOutUri);
+        query.setParameter("grant_type" , grantType);
+        query.setParameter("response_type" , responseType);
+        query.setParameter("token_types" , tokenTypes);
+        query.setParameter("jwt_secret" , jwtSecret);
+        query.setParameter("client_type" , clientType);
+
+
+        query.executeUpdate();
+
+    }
 }
 

@@ -32,4 +32,10 @@ public class KeyrockController {
         return Collections.singletonMap("status","ok");
     }
 
+    @PostMapping(value = "/sync/app")
+    public Map<String, String> syncApp() {
+        userService.refreshKeyrockApplications();
+        return Collections.singletonMap("status","ok");
+    }
+
 }
